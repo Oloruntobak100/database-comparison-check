@@ -1,0 +1,67 @@
+//1- Open XAMMP COntrol Panel
+//2- On the Apache Service click Config
+//3- Select the php.ini file
+//4. Search for keyword extension=php_pgsql.dll, and extension=php_pdo_pgsql.dll then enable it
+//5. Save file and close
+//6. Restart the Apache service
+
+
+
+<?php
+// Database connection settings
+$host = 'localhost';
+$dbname = 'hyella_payment_service';
+$user = 'postgres';
+$password = 'pat2echo';
+
+// Connecting to PostgreSQL database using PDO
+$dsn = "pgsql:host=$host;dbname=$dbname";
+try {
+    // Create a PDO instance
+    $pdo = new PDO($dsn, $user, $password);
+
+    // Set error mode to exception
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // Prepare and execute the SELECT query
+    $sql = 'SELECT * FROM gateway_service.role';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+
+    // Fetch all results
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Display the results
+    echo "<table border='1'>";
+    echo "
+    <tr>
+             <th>id</th>
+             <th>created_at</th>
+             <th>name</th>
+             <th>updated_at</th>
+             <th>deleted</th>
+             <th>address</th>
+             <th>enabled</th>
+    </tr>";
+
+    foreach ($results as $row) {
+        echo "<tr>";
+        echo "<td>" . htmlspecialchars($row['id']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['created_at']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['name']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['updated_at']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['deleted']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['address']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['enabled']) . "</td>";
+        echo "</tr>";
+    }
+    echo "</table>";
+} catch (PDOException $e) {
+    // Display error message if something goes wrong
+    echo 'Connection failed for kay: ' . $e->getMessage();
+}
+
+
+
+
+
